@@ -13,7 +13,7 @@
         </q-btn>
 
         <q-toolbar-title>
-          Quasar Tutorial
+          Madrasah Diniah
         </q-toolbar-title>
 
         <q-btn-dropdown flat text-bold :label="user.displayName || user.email">
