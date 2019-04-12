@@ -19,11 +19,12 @@ script:
   - quasar build
 
 deploy:
-  if: branch = prod
   provider: firebase
   token:
     secure: $FIREBASE_TOKEN
-  project: "madin-darut-taqwa"
+  project: "$FIREBASE_ID"
+  on:
+    branch: prod
 
 notifications:
   email: false
