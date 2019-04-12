@@ -23,8 +23,9 @@ deploy:
   token:
     secure: $FIREBASE_TOKEN
   project: "$FIREBASE_ID"
+  skip_cleanup: true
   on:
-    branch: prod
+    tags: true
 
 notifications:
   email: false
