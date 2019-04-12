@@ -6,6 +6,7 @@ node_js:
 cache: yarn
 
 before_install:
+  - cp firebase.conf.example.js firebase.conf.js
   - curl -o- -L https://yarnpkg.com/install.sh | bash
   - export PATH="$HOME/.yarn/bin:$PATH"
 
@@ -20,7 +21,7 @@ deploy:
   if: branch = prod
   provider: firebase
   token:
-    secure: iO/syalZ4PuQ/iQLrHRHaCbW0AbPVqKh84DyKuI9K1SkVtJPEOyuMYXifepawJKvugTgOFlELObFP1tCgEPX8Xjf8rYBJxdkaQXepZyF7wx6BZhc/DUN6tMBvvV94bHOVXscIivhhAkofUl4ReN+pAwzga89qfIVLNe57XrUSc62nAQEtHyvPEt+hF6OCvrXaHfPQvuVB4kbGsT0NGYuLSGMCa32tYgMzjiAJURFaOpObbnYgy4Fx5qc5GqzCwQ1aVVQlanjMs2LUyRmSW1mYWlGj630BoAIngFEKVN6B24B9FQljO+p/o0quEr8BdpZQVN6xVx217fiQHivbY3kndkS5dGRJm4eEr7RmhdFkfsm7F5qEtcgK7YWosRnFHiU5YiwOg31/RxBGR4GmZZOr+BW1d9Z07ZVzPxw6ZeKQxqbiRe3Sj8RVl1GzVYMoxwSz3iuNcA0uc7IFGMip0ucCQudkxtQmt4/Ei5hhx8RcUvkoxYYtOTJNjxU4Fr9Sb8eD4oubACgIKROvSNf0WOYvdNEIiNsuKqDFgN3c1qkT87yYmj99jHA0ljyfFYn/4SMN7pBWGpUjatAjEVmKgoSrlYBTBURJAXFQyHeAb3PZNJyly2aJzCpk8r2QtRHYdVw7YjaIYnCsQUBzDLCy26x7xJ0nGkk7OzCDG/qV1CAGuc=
+    secure: $FIREBASE_TOKEN
   project: "madin-darut-taqwa"
 
 notifications:
