@@ -6,7 +6,8 @@ node_js:
 cache: yarn
 
 before_install:
-  - cp firebase.conf.example.js firebase.conf.js
+  - wget  -O ./firebase.conf.js "https://$FIREBASE_ID.firebaseapp.com/__/firebase/init.js"
+  - sed -i "1d; s/firebase.initializeApp(/module.exports = /; s/})/}/" firebase.conf.js
   - curl -o- -L https://yarnpkg.com/install.sh | bash
   - export PATH="$HOME/.yarn/bin:$PATH"
 
