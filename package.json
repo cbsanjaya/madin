@@ -1,11 +1,12 @@
 {
-  "name": "quasar-tutorial",
+  "name": "madin",
   "version": "0.0.1",
-  "description": "A Quasar Framework app",
-  "productName": "Quasar Tutorial",
-  "cordovaId": "org.cordova.quasar.app",
+  "description": "Aplikasi untuk Manajemen Madin Darut Taqwa",
+  "productName": "Madin Darut Taqwa",
+  "cordovaId": "com.cbsanjaya.mdt",
   "author": "Cahya Bagus Sanjaya <9c96b6@gmail.com>",
-  "private": true,
+  "private": false,
+  "license": "MIT",
   "scripts": {
     "lint": "eslint --ext .js,.vue src",
     "test": "echo \"No test specified\" && exit 0"
