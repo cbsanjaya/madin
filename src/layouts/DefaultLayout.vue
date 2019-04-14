@@ -13,19 +13,28 @@
         </q-btn>
 
         <q-toolbar-title>
-          Madrasah Diniah
+          {{ $route.meta.title }}
         </q-toolbar-title>
 
-        <q-btn-dropdown flat text-bold :label="user.displayName || user.email">
-          <q-list>
-            <q-item clickable @click="logout">
-              <q-item-section>
-                <q-item-label>Log Out</q-item-label>
-                <q-item-label caption>Clear your Session</q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-btn-dropdown>
+        <q-btn round>
+          <q-avatar>
+            <img :src="user.photoURL">
+          </q-avatar>
+
+          <q-menu
+            transition-show="flip-right"
+            transition-hide="flip-left"
+          >
+            <q-list style="min-width: 100px">
+              <q-item clickable @click="logout">
+                <q-item-section>
+                  <q-item-label>Logout</q-item-label>
+                  <q-item-label caption>{{ user.displayName || user.email }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
       </q-toolbar>
     </q-header>
 
