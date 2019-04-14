@@ -101,6 +101,7 @@ export default {
       isNew: true
     },
     students: [],
+    studentId: null,
     editStudent: {}
   }),
   firestore () {
@@ -115,7 +116,6 @@ export default {
         isNew: true
       }
       this.editStudent = {
-        id: null,
         induk: null,
         nama: null,
         kamar: null
@@ -126,8 +126,8 @@ export default {
         show: true,
         isNew: false
       }
+      this.studentId = student.id
       this.editStudent = {
-        id: student.id,
         induk: student.induk,
         nama: student.nama,
         kamar: student.kamar
@@ -137,7 +137,7 @@ export default {
       if (this.formStudent.isNew) {
         this.$firestoreRefs.students.add(this.editStudent)
       } else {
-        this.$firestoreRefs.students.doc(this.editStudent.id).update(this.editStudent)
+        this.$firestoreRefs.students.doc(this.studentId).update(this.editStudent)
       }
     },
     deleteData (id) {
