@@ -1,20 +1,64 @@
 <template>
   <q-page padding>
-    <q-list bordered>
-      <q-item clickable v-ripple @click="dataBaru">
-        <q-item-section avatar>
-          <q-icon color="primary" name="plus" />
-        </q-item-section>
-        <q-item-section>Tambah Data Baru</q-item-section>
-      </q-item>
-      <q-item clickable v-ripple v-for="siswa in siswas" :key="siswa.id" @click="editData(siswa)">
-        <q-item-section avatar>
-          <q-icon color="primary" name="bluetooth" />
-        </q-item-section>
-        <q-item-section>{{ siswa.nama }}</q-item-section>
-      </q-item>
-    </q-list>
-    <q-dialog v-model="formSiswa.show">
+    <q-table
+      title="Siswa"
+      :data="students"
+      :columns="columns"
+      row-key="id"
+      :rows-per-page-options="[]"
+      :loading="loading"
+      :filter="filter"
+      binary-state-sort
+    >
+      <template v-slot:top-left>
+        <q-btn
+          label="Baru"
+          color="secondary"
+          @click="newData"
+          icon="add"
+        />
+      </template>
+
+      <template v-slot:top-right>
+        <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+      </template>
+
+      <template v-slot:body-cell-aksi="props">
+        <q-td :props="props">
+          <q-btn-group rounded>
+            <q-btn
+              size="sm"
+              color="primary"
+              icon="edit"
+              rounded
+              @click="editData(props.row)"
+            />
+            <q-btn
+              size="sm"
+              color="negative"
+              icon="delete"
+              rounded
+              @click="deleteData(props.row.id)"
+            />
+          </q-btn-group>
+        </q-td>
+      </template>
+
+      <template v-slot:pagination>
+        <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+      </template>
+
+    </q-table>
+
+    <q-dialog v-model="formStudent.show">
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section>
           <div class="text-h6">Edit Siswa</div>
@@ -23,8 +67,9 @@
         <q-separator />
 
         <q-card-section>
-          <q-input v-model="editSiswa.id" label="Id" readonly/>
-          <q-input v-model="editSiswa.nama" label="Nama" />
+          <q-input v-model="editStudent.induk" label="Induk" autofocus/>
+          <q-input v-model="editStudent.nama" label="Nama" />
+          <q-input v-model="editStudent.kamar" label="Kamar" />
         </q-card-section>
 
         <q-separator />
@@ -38,60 +83,77 @@
   </q-page>
 </template>
 
-<style>
-</style>
-
 <script>
 
 export default {
   name: 'PageStudentIndex',
   data: () => ({
-    formSiswa: {
+    filter: '',
+    loading: false,
+    columns: [
+      { name: 'induk', label: 'Induk', field: 'induk', align: 'left' },
+      { name: 'nama', label: 'Nama', field: 'nama', align: 'left' },
+      { name: 'kamar', label: 'Kamar', field: 'kamar', align: 'left' },
+      { name: 'aksi', label: 'Aksi', align: 'center' }
+    ],
+    formStudent: {
       show: false,
       isNew: true
     },
-    siswas: [],
-    editSiswa: {
-      id: null,
-      nama: null
-    }
+    students: [],
+    editStudent: {}
   }),
   firestore () {
     return {
-      siswas: this.$db.collection('siswa')
+      students: this.$db.collection('students')
     }
   },
   methods: {
-    dataBaru () {
-      this.formSiswa = {
+    newData () {
+      this.formStudent = {
         show: true,
         isNew: true
       }
-      this.editSiswa = {
-        id: '[Auto]',
-        nama: null
+      this.editStudent = {
+        id: null,
+        induk: null,
+        nama: null,
+        kamar: null
       }
     },
-    editData (siswa) {
-      this.formSiswa = {
+    editData (student) {
+      this.formStudent = {
         show: true,
         isNew: false
       }
-      this.editSiswa = {
-        id: siswa.id,
-        nama: siswa.nama
+      this.editStudent = {
+        id: student.id,
+        induk: student.induk,
+        nama: student.nama,
+        kamar: student.kamar
       }
     },
     saveData () {
-      if (this.formSiswa.isNew) {
-        this.$firestoreRefs.siswas.add({
-          nama: this.editSiswa.nama
-        })
+      if (this.formStudent.isNew) {
+        this.$firestoreRefs.students.add(this.editStudent)
       } else {
-        this.$firestoreRefs.siswas.doc(this.editSiswa.id).update({
-          nama: this.editSiswa.nama
-        })
+        this.$firestoreRefs.students.doc(this.editStudent.id).update(this.editStudent)
       }
+    },
+    deleteData (id) {
+      this.$q.dialog({
+        title: 'Konfirmasi',
+        message: 'Apa Benar Anda Akan Menghapus Data ini?',
+        ok: {
+          push: true
+        },
+        cancel: {
+          color: 'negative'
+        },
+        persistent: true
+      }).onOk(() => {
+        this.$firestoreRefs.students.doc(id).delete()
+      })
     }
   }
 }
