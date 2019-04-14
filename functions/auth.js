@@ -4,7 +4,7 @@ const createProfile = (userRecord, context) => {
   const { email, uid, displayName } = userRecord;
 
   return db
-    .collection('Users')
+    .collection('users')
     .doc(uid)
     .set({ email, displayName })
     .catch(console.error);
@@ -13,7 +13,7 @@ const createProfile = (userRecord, context) => {
 const deleteProfile = (userRecord, context) => {
   const { uid } = userRecord;
   return db
-    .collection('Users')
+    .collection('users')
     .doc(uid)
     .delete()
     .catch(console.error);
