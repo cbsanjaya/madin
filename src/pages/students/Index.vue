@@ -11,20 +11,20 @@
       binary-state-sort
     >
       <template v-slot:top-left>
+        <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+      </template>
+
+      <template v-slot:top-right>
         <q-btn
           label="Baru"
           color="secondary"
           @click="newData"
           icon="add"
         />
-      </template>
-
-      <template v-slot:top-right>
-        <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
       </template>
 
       <template v-slot:body-cell-aksi="props">
@@ -48,13 +48,7 @@
         </q-td>
       </template>
 
-      <template v-slot:pagination>
-        <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
-      </template>
+      <template v-slot:bottom :pagination="null"/>
 
     </q-table>
 

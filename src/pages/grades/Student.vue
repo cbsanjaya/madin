@@ -11,16 +11,16 @@
       binary-state-sort
     >
       <template v-slot:top-left>
+        <div class="text-h4">Daftar Siswa Kelas {{ grade ? grade.nama : '' }}</div>
+      </template>
+
+      <template v-slot:top-right>
         <q-btn
           label="Baru"
           color="secondary"
           @click="newData"
           icon="add"
         />
-      </template>
-
-      <template v-slot:top-right>
-        <div class="text-h4">Daftar Siswa Kelas {{ grade ? grade.nama : '' }}</div>
       </template>
 
       <template v-slot:body-cell-aksi="props">
