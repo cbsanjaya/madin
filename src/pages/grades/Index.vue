@@ -40,7 +40,7 @@
               color="green"
               icon="visibility"
               rounded
-              @click="showDetails(props.row)"
+              @click="showDetails(props.row.id)"
             />
             <q-btn
               size="sm"
@@ -178,8 +178,8 @@ export default {
         this.$firestoreRefs.grades.doc(id).delete()
       })
     },
-    showDetails (grade) {
-
+    showDetails (gradeId) {
+      this.$router.push({ path: `/grades/${gradeId}` })
     }
   }
 }
