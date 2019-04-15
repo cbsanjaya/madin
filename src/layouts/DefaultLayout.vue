@@ -47,7 +47,7 @@
         <q-item-label header>Popular Menu</q-item-label>
         <q-item clickable to="/" exact>
           <q-item-section avatar>
-            <q-icon name="school" />
+            <q-icon name="dashboard" />
           </q-item-section>
           <q-item-section>
             <q-item-label>Dashbor</q-item-label>
@@ -62,6 +62,24 @@
           <q-item-section>
             <q-item-label>Siswa</q-item-label>
             <q-item-label caption>Daftar Siswa</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item clickable to="/teachers">
+          <q-item-section avatar>
+            <q-icon name="assignment_ind" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Guru</q-item-label>
+            <q-item-label caption>Daftar Guru</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item clickable to="/grades">
+          <q-item-section avatar>
+            <q-icon name="room" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Kelas</q-item-label>
+            <q-item-label caption>Daftar Kelas</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>
@@ -81,7 +99,8 @@ export default {
   data () {
     return {
       leftDrawerOpen: this.$q.platform.is.desktop,
-      user: this.$auth.currentUser
+      user: this.$auth.currentUser,
+      routes: this.$router.options.routes
     }
   },
   methods: {

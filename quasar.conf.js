@@ -52,7 +52,8 @@ module.exports = function (ctx) {
         'QTh',
         'QTr',
         'QTd',
-        'QMenu'
+        'QMenu',
+        'QSelect'
       ],
 
       directives: [
