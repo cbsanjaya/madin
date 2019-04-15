@@ -2,64 +2,56 @@
   <q-page padding>
     <q-table
       title="Siswa"
-      :data="students"
+      :data="gradeStudents"
       :columns="columns"
       row-key="id"
-      :rows-per-page-options="[]"
-      :loading="loading"
-      :filter="filter"
-      binary-state-sort
+      selection="multiple"
+      :selected.sync="selected"
     >
       <template v-slot:top-left>
         <div class="text-h4">Daftar Siswa Kelas {{ grade ? grade.nama : '' }}</div>
       </template>
 
       <template v-slot:top-right>
-        <q-btn
-          label="Baru"
-          color="secondary"
-          @click="newData"
-          icon="add"
-        />
-      </template>
-
-      <template v-slot:body-cell-aksi="props">
-        <q-td :props="props">
-          <q-btn-group rounded>
-            <q-btn
-              size="sm"
-              color="primary"
-              icon="edit"
-              rounded
-              @click="editData(props.row)"
-            />
-            <q-btn
-              size="sm"
-              color="negative"
-              icon="delete"
-              rounded
-              @click="deleteData(props.row.id)"
-            />
-          </q-btn-group>
-        </q-td>
+        <q-btn-group rounded>
+          <q-btn
+            rounded
+            label="Baru"
+            color="secondary"
+            icon="add"
+            @click="newData"
+          />
+          <q-btn
+            rounded
+            label="Hapus"
+            color="negative"
+            icon="delete"
+            @click="deleteData"
+            :disable="selected.length === 0"
+          />
+        </q-btn-group>
       </template>
 
       <template v-slot:bottom :pagination="null"/>
 
     </q-table>
 
-    <q-dialog v-model="formStudent.show">
+    <q-dialog v-model="showForm">
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section>
-          <div class="text-h6">Edit Siswa</div>
+          <div class="text-h6">Tambah Siswa ke Kelas</div>
         </q-card-section>
 
-        <q-separator />
-
-        <q-card-section>
-          <q-input v-model="editStudent.induk" label="Induk" autofocus/>
-          <q-input v-model="editStudent.nama" label="Nama" />
-          <q-input v-model="editStudent.kamar" label="Kamar" />
+        <q-card-section style="margin-bottom: 300px">
+          <q-select
+            v-model="newStudent"
+            label="Nama Siswa"
+            :options="students"
+            option-value="id"
+            option-label="nama"
+            emit-value
+            map-options
+          />
         </q-card-section>
 
         <q-separator />
@@ -78,61 +70,49 @@
 export default {
   name: 'PageGradeStudent',
   data: () => ({
-    filter: '',
-    loading: false,
+    selected: [],
     columns: [
       { name: 'induk', label: 'Induk', field: 'induk', align: 'left' },
       { name: 'nama', label: 'Nama', field: 'nama', align: 'left' },
-      { name: 'kamar', label: 'Kamar', field: 'kamar', align: 'left' },
-      { name: 'aksi', label: 'Aksi', align: 'center' }
+      { name: 'kamar', label: 'Kamar', field: 'kamar', align: 'left' }
     ],
-    formStudent: {
-      show: false,
-      isNew: true
-    },
+    showForm: false,
     students: [],
     studentId: null,
-    editStudent: {},
-    grade: null
+    newStudent: null,
+    grade: null,
+    gradeRef: null
   }),
+  computed: {
+    gradeStudents: function () {
+      return this.students.filter(student => {
+        if (student.grades) {
+          for (let i in student.grades) {
+            if (student.grades[i].id === this.grade.id) {
+              return true
+            }
+          }
+        }
+        return false
+      })
+    }
+  },
   created () {
     let gradeId = this.$route.params.gradeId
-    let gradeRef = this.$db.doc(`/grades/${gradeId}`)
-    this.$bind('grade', gradeRef)
-    this.$bind('students', this.$db.collection('students').where('grades', 'array-contains', gradeRef))
+    this.gradeRef = this.$db.doc(`/grades/${gradeId}`)
+    this.$bind('grade', this.gradeRef)
+    this.$bind('students', this.$db.collection('students').orderBy('nama'))
   },
   methods: {
     newData () {
-      this.formStudent = {
-        show: true,
-        isNew: true
-      }
-      this.editStudent = {
-        induk: null,
-        nama: null,
-        kamar: null
-      }
-    },
-    editData (student) {
-      this.formStudent = {
-        show: true,
-        isNew: false
-      }
-      this.studentId = student.id
-      this.editStudent = {
-        induk: student.induk,
-        nama: student.nama,
-        kamar: student.kamar
-      }
+      this.showForm = true
+      this.newStudent = null
     },
     saveData () {
-      if (this.formStudent.isNew) {
-        this.$firestoreRefs.students.add(this.editStudent)
-      } else {
-        this.$firestoreRefs.students.doc(this.studentId).update(this.editStudent)
-      }
+      this.$db.doc(`/students/${this.newStudent}`)
+        .update({ grades: this.$firebase.firestore.FieldValue.arrayUnion(this.gradeRef) })
     },
-    deleteData (id) {
+    deleteData () {
       this.$q.dialog({
         title: 'Konfirmasi',
         message: 'Apa Benar Anda Akan Menghapus Data ini?',
@@ -144,7 +124,10 @@ export default {
         },
         persistent: true
       }).onOk(() => {
-        this.$firestoreRefs.students.doc(id).delete()
+        for (let i in this.selected) {
+          this.$db.doc(`/students/${this.selected[i].id}`)
+            .update({ grades: this.$firebase.firestore.FieldValue.arrayRemove(this.gradeRef) })
+        }
       })
     }
   }
