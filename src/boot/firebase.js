@@ -4,13 +4,18 @@ import 'firebase/firestore'
 import 'firebase/auth'
 import config from '../../firebase.conf'
 
-export default async ({ app, router, Vue }) => {
+export default async ({ app, router, store, Vue }) => {
   Vue.use(firestorePlugin)
 
   firebase.initializeApp(config)
+  const db = firebase.firestore()
+
   Vue.prototype.$firebase = firebase
   Vue.prototype.$auth = firebase.auth()
-  Vue.prototype.$db = firebase.firestore()
+  Vue.prototype.$db = db
+
+  const periodRef = db.collection('settings').doc('period')
+  store.dispatch('setting/bindPeriod', periodRef)
 
   router.beforeEach((to, from, next) => {
     firebase.auth().onAuthStateChanged(function (user) {
