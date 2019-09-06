@@ -81,14 +81,14 @@ export default {
     studentId: null,
     newStudent: null,
     grade: null,
-    gradeRef: null
+    gradeId: null
   }),
   computed: {
     gradeStudents: function () {
       return this.students.filter(student => {
         if (student.grades) {
           for (let i in student.grades) {
-            if (student.grades[i].id === this.grade.id) {
+            if (student.grades[i] === this.grade.id) {
               return true
             }
           }
@@ -98,9 +98,8 @@ export default {
     }
   },
   created () {
-    let gradeId = this.$route.params.gradeId
-    this.gradeRef = this.$db.doc(`/grades/${gradeId}`)
-    this.$bind('grade', this.gradeRef)
+    this.gradeId = this.$route.params.gradeId
+    this.$bind('grade', this.$db.doc(`/grades/${this.gradeId}`))
     this.$bind('students', this.$db.collection('students').orderBy('nama'))
   },
   methods: {
@@ -110,7 +109,7 @@ export default {
     },
     saveData () {
       this.$db.doc(`/students/${this.newStudent}`)
-        .update({ grades: this.$firebase.firestore.FieldValue.arrayUnion(this.gradeRef) })
+        .update({ grades: this.$firebase.firestore.FieldValue.arrayUnion(this.gradeId) })
     },
     deleteData () {
       this.$q.dialog({
@@ -126,7 +125,7 @@ export default {
       }).onOk(() => {
         for (let i in this.selected) {
           this.$db.doc(`/students/${this.selected[i].id}`)
-            .update({ grades: this.$firebase.firestore.FieldValue.arrayRemove(this.gradeRef) })
+            .update({ grades: this.$firebase.firestore.FieldValue.arrayRemove(this.gradeId) })
         }
       })
     }
