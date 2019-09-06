@@ -26,12 +26,6 @@
         />
       </template>
 
-      <template v-slot:body-cell-guru="props">
-        <q-td :props="props">
-          {{ props.row.guru.nama || '' }}
-        </q-td>
-      </template>
-
       <template v-slot:body-cell-aksi="props">
         <q-td :props="props">
           <q-btn-group rounded>
@@ -75,15 +69,6 @@
         <q-card-section>
           <q-input v-model="editGrade.nama" label="Nama" autofocus/>
           <q-input v-model="editGrade.tahun" label="Tahun" type="number"/>
-          <q-select
-            v-model="editGrade.guru"
-            label="Guru"
-            :options="teachers"
-            option-value="id"
-            option-label="nama"
-            emit-value
-            map-options
-          />
         </q-card-section>
 
         <q-separator />
@@ -107,7 +92,6 @@ export default {
     columns: [
       { name: 'nama', label: 'Nama', field: 'nama', align: 'left' },
       { name: 'tahun', label: 'Tahun', field: 'tahun', align: 'left' },
-      { name: 'guru', label: 'Guru', align: 'left' },
       { name: 'aksi', label: 'Aksi', align: 'center' }
     ],
     formGrade: {
@@ -116,13 +100,11 @@ export default {
     },
     grades: [],
     gradeId: null,
-    editGrade: {},
-    teachers: []
+    editGrade: {}
   }),
   firestore () {
     return {
-      grades: this.$db.collection('grades'),
-      teachers: this.$db.collection('teachers')
+      grades: this.$db.collection('grades')
     }
   },
   methods: {
@@ -133,8 +115,7 @@ export default {
       }
       this.editGrade = {
         nama: null,
-        tahun: null,
-        guru: null
+        tahun: null
       }
     },
     editData (grade) {
@@ -145,12 +126,10 @@ export default {
       this.gradeId = grade.id
       this.editGrade = {
         nama: grade.nama,
-        tahun: grade.tahun,
-        guru: grade.guru.id
+        tahun: grade.tahun
       }
     },
     saveData () {
-      this.editGrade.guru = this.$db.collection('teachers').doc(this.editGrade.guru)
       if (this.formGrade.isNew) {
         this.$firestoreRefs.grades.add(this.editGrade)
       } else {
