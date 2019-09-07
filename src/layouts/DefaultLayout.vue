@@ -16,6 +16,26 @@
           {{ $route.meta.title }}
         </q-toolbar-title>
 
+        <q-btn-dropdown stretch flat :label="`${$store.getters['setting/getActivePeriod']} H`">
+          <q-list>
+            <q-item-label header>Ubah Tahun Ajaran</q-item-label>
+            <q-item v-for="ta in $store.getters['setting/getPeriods']"
+              :key="ta"
+              clickable
+              @click="changePeriod(ta)"
+              v-close-popup
+              tabindex="0"
+            >
+              <q-item-section avatar>
+                <q-avatar icon="calendar_today" color="secondary" text-color="white" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>{{ ta }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
+
         <q-btn round>
           <q-avatar>
             <img :src="user.photoURL">
@@ -107,6 +127,9 @@ export default {
     openURL,
     logout () {
       this.$auth.signOut()
+    },
+    changePeriod (v) {
+      this.$store.commit('setting/changeActivePeriod', v)
     }
   }
 }

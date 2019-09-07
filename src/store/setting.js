@@ -20,7 +20,14 @@ export default {
   },
 
   getters: {
-    activePeriod: state => {
+    getPeriods: (state, getters) => {
+      if (state.period) {
+        return state.period.periods.filter(v => v !== getters.getActivePeriod)
+      }
+
+      return []
+    },
+    getActivePeriod: state => {
       if (state.period) {
         return state.localActivePeriod ? state.localActivePeriod : state.period.active
       }
