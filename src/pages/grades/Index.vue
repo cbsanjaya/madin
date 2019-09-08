@@ -153,10 +153,10 @@ export default {
       })
     },
     showStudents (gradeId) {
-      this.$router.push({ path: `/grades/students/${gradeId}` })
+      this.$router.push({ path: `/grades/${gradeId}/students` })
     },
     showLessons (gradeId) {
-      this.$router.push({ path: `/grades/lessons/${gradeId}` })
+      this.$router.push({ path: `/grades/${gradeId}/lessons` })
     }
   }
 }
