@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { vuexfireMutations } from 'vuexfire'
 
+import auth from './auth'
 import setting from './setting'
 
 Vue.use(Vuex)
@@ -17,6 +18,7 @@ export default function (/* { ssrContext } */) {
       ...vuexfireMutations
     },
     modules: {
+      auth,
       setting
     },
 

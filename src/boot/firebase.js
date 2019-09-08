@@ -18,7 +18,7 @@ export default async ({ app, router, store, Vue }) => {
   store.dispatch('setting/bindPeriod', periodRef)
 
   router.beforeEach((to, from, next) => {
-    firebase.auth().onAuthStateChanged(function (user) {
+    firebase.auth().onAuthStateChanged(user => {
       if (!user && to.path !== '/auth/login') {
         next('/auth/login')
       }

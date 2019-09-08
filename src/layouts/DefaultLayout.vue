@@ -128,9 +128,14 @@ export default {
       'getPeriods'
     ])
   },
+  mounted () {
+    let userRef = this.$db.collection('users').doc(this.user.uid)
+    this.$store.dispatch('auth/bindUser', userRef)
+  },
   methods: {
     openURL,
     logout () {
+      this.$store.dispatch('auth/unbindUser')
       this.$auth.signOut()
     },
     changePeriod (v) {
