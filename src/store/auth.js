@@ -20,7 +20,7 @@ export default {
   },
 
   getters: {
-    getRole: (state) => {
+    getRoles: (state) => {
       return Object.assign({}, {
         admin: false,
         homeroom: false,

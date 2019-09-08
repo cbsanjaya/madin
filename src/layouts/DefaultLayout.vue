@@ -129,8 +129,10 @@ export default {
     ])
   },
   mounted () {
-    let userRef = this.$db.collection('users').doc(this.user.uid)
-    this.$store.dispatch('auth/bindUser', userRef)
+    if (!this.$store.state.auth.user) {
+      let userRef = this.$db.collection('users').doc(this.$auth.currentUser.uid)
+      this.$store.dispatch('auth/bindUser', userRef)
+    }
   },
   methods: {
     openURL,
