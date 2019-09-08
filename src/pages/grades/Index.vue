@@ -10,11 +10,7 @@
       binary-state-sort
     >
       <template v-slot:top-left>
-        <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
+        <div class="text-h4">Daftar Kelas</div>
       </template>
 
       <template v-slot:top-right>
@@ -76,8 +72,7 @@
         <q-separator />
 
         <q-card-section>
-          <q-input v-model="editGrade.nama" label="Nama" autofocus/>
-          <q-input v-model="editGrade.periode" label="Periode"/>
+          <q-input v-model="editGrade.name" label="Kelas" autofocus/>
         </q-card-section>
 
         <q-separator />
@@ -92,7 +87,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 
 export default {
   name: 'PageGradeIndex',
@@ -100,8 +94,7 @@ export default {
     filter: '',
     loading: false,
     columns: [
-      { name: 'nama', label: 'Nama', field: 'nama', align: 'left' },
-      { name: 'periode', label: 'Periode', field: 'periode', align: 'left' },
+      { name: 'name', label: 'Kelas', field: 'name', align: 'left' },
       { name: 'aksi', label: 'Aksi', align: 'center' }
     ],
     formGrade: {
@@ -112,17 +105,9 @@ export default {
     gradeId: null,
     editGrade: {}
   }),
-  computed: {
-    ...mapGetters('setting', [
-      'getActivePeriod'
-    ])
-  },
-  watch: {
-    getActivePeriod: {
-      immediate: true,
-      handler (id) {
-        this.$bind('grades', this.$db.collection('grades').where('periode', '==', id))
-      }
+  firestore () {
+    return {
+      grades: this.$db.collection('grades')
     }
   },
   methods: {
@@ -132,8 +117,7 @@ export default {
         isNew: true
       }
       this.editGrade = {
-        nama: null,
-        periode: null
+        name: null
       }
     },
     editData (grade) {
@@ -143,8 +127,7 @@ export default {
       }
       this.gradeId = grade.id
       this.editGrade = {
-        nama: grade.nama,
-        periode: grade.periode
+        name: grade.name
       }
     },
     saveData () {
