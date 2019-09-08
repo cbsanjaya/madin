@@ -61,9 +61,9 @@
         <q-separator />
 
         <q-card-section>
-          <q-input v-model="editStudent.induk" label="Induk" autofocus/>
-          <q-input v-model="editStudent.nama" label="Nama" />
-          <q-input v-model="editStudent.kamar" label="Kamar" />
+          <q-input v-model="editStudent.idn" label="Induk" autofocus/>
+          <q-input v-model="editStudent.name" label="Nama" />
+          <q-input v-model="editStudent.room" label="Kamar" />
         </q-card-section>
 
         <q-separator />
@@ -85,9 +85,9 @@ export default {
     filter: '',
     loading: false,
     columns: [
-      { name: 'induk', label: 'Induk', field: 'induk', align: 'left' },
-      { name: 'nama', label: 'Nama', field: 'nama', align: 'left' },
-      { name: 'kamar', label: 'Kamar', field: 'kamar', align: 'left' },
+      { name: 'idn', label: 'Induk', field: 'idn', align: 'left' },
+      { name: 'name', label: 'Nama', field: 'name', align: 'left' },
+      { name: 'room', label: 'Kamar', field: 'room', align: 'left' },
       { name: 'aksi', label: 'Aksi', align: 'center' }
     ],
     formStudent: {
@@ -110,9 +110,9 @@ export default {
         isNew: true
       }
       this.editStudent = {
-        induk: null,
-        nama: null,
-        kamar: null
+        idn: null,
+        name: null,
+        room: null
       }
     },
     editData (student) {
@@ -122,9 +122,9 @@ export default {
       }
       this.studentId = student.id
       this.editStudent = {
-        induk: student.induk,
-        nama: student.nama,
-        kamar: student.kamar
+        idn: student.idn,
+        name: student.name,
+        room: student.room
       }
     },
     saveData () {
