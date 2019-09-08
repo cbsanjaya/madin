@@ -2,7 +2,7 @@
   <q-page padding>
     <q-table
       title="Siswa"
-      :data="getStudentScores"
+      :data="getLessonScores"
       :columns="columns"
       row-key="id"
       :rows-per-page-options="[]"
@@ -23,24 +23,6 @@
               <q-input type="number" v-model="editScore" dense autofocus />
             </q-popup-edit>
           </q-td>
-          <q-td key="aksi" :props="props">
-            <q-btn-group rounded>
-              <q-btn
-                size="sm"
-                color="primary"
-                icon="edit"
-                rounded
-                @click="editData(props.row)"
-              />
-              <q-btn
-                size="sm"
-                color="negative"
-                icon="delete"
-                rounded
-                @click="deleteData(props.row.id)"
-              />
-            </q-btn-group>
-          </q-td>
         </q-tr>
       </template>
 
@@ -54,7 +36,7 @@
 <script>
 
 export default {
-  name: 'PageScoreIndex',
+  name: 'PageLessonScoreIndex',
   data: () => ({
     grade: null,
     lesson: null,
@@ -63,8 +45,7 @@ export default {
     columns: [
       { name: 'idn', label: 'Induk', field: 'idn', align: 'left' },
       { name: 'name', label: 'Nama', field: 'name', align: 'left' },
-      { name: 'score', label: 'Nilai', field: 'score', align: 'left' },
-      { name: 'aksi', label: 'Aksi', align: 'center' }
+      { name: 'score', label: 'Nilai', field: 'score', align: 'left' }
     ],
     scores: [],
     editScore: ''
@@ -77,7 +58,7 @@ export default {
 
       return ''
     },
-    getStudentScores () {
+    getLessonScores () {
       return this.students.map(item => {
         let findScore = this.scores.find(sc => sc.student === item.student.id)
         let newItem = {

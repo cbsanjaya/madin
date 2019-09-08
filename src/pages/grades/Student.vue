@@ -32,6 +32,21 @@
         </q-btn-group>
       </template>
 
+      <template v-slot:body-cell-aksi="props">
+        <q-td :props="props">
+          <q-btn-group rounded>
+            <q-btn
+              size="sm"
+              color="green"
+              icon="visibility"
+              label="Nilai"
+              rounded
+              @click="showScores(props.row.student.id)"
+            />
+          </q-btn-group>
+        </q-td>
+      </template>
+
       <template v-slot:bottom :pagination="null"/>
 
     </q-table>
@@ -75,7 +90,8 @@ export default {
     columns: [
       { name: 'idn', label: 'Induk', field: row => row.student.idn, align: 'left' },
       { name: 'name', label: 'Nama', field: row => row.student.name, align: 'left' },
-      { name: 'room', label: 'Kamar', field: row => row.student.room, align: 'left' }
+      { name: 'room', label: 'Kamar', field: row => row.student.room, align: 'left' },
+      { name: 'aksi', label: 'Aksi', align: 'center' }
     ],
     showForm: false,
     students: [],
@@ -138,6 +154,9 @@ export default {
         }
         this.selected = []
       })
+    },
+    showScores (studentId) {
+      this.$router.push({ path: `/grades/${this.grade.id}/students/${studentId}/scores` })
     }
   }
 }
