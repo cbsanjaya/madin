@@ -27,6 +27,14 @@
           <q-btn-group rounded>
             <q-btn
               size="sm"
+              color="green"
+              icon="visibility"
+              label="Nilai"
+              rounded
+              @click="showScores(props.row.id)"
+            />
+            <q-btn
+              size="sm"
               color="primary"
               icon="edit"
               rounded
@@ -168,6 +176,9 @@ export default {
       }).onOk(() => {
         this.$firestoreRefs.lessons.doc(id).delete()
       })
+    },
+    showScores (lessonId) {
+      this.$router.push({ path: `/grades/${this.grade.id}/lessons/${lessonId}/scores` })
     }
   }
 }

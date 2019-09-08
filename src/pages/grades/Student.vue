@@ -73,9 +73,9 @@ export default {
   data: () => ({
     selected: [],
     columns: [
-      { name: 'induk', label: 'Induk', field: row => row.student.idn, align: 'left' },
-      { name: 'nama', label: 'Nama', field: row => row.student.name, align: 'left' },
-      { name: 'kamar', label: 'Kamar', field: row => row.student.room, align: 'left' }
+      { name: 'idn', label: 'Induk', field: row => row.student.idn, align: 'left' },
+      { name: 'name', label: 'Nama', field: row => row.student.name, align: 'left' },
+      { name: 'room', label: 'Kamar', field: row => row.student.room, align: 'left' }
     ],
     showForm: false,
     students: [],
