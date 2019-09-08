@@ -8,7 +8,8 @@ const routes = [
       { path: 'students', component: () => import('pages/students/Index.vue'), meta: { title: 'Daftar Siswa' } },
       { path: 'teachers', component: () => import('pages/teachers/Index.vue'), meta: { title: 'Daftar Guru' } },
       { path: 'grades', component: () => import('pages/grades/Index.vue'), meta: { title: 'Daftar Kelas' } },
-      { path: 'grades/:gradeId', component: () => import('pages/grades/Student.vue'), meta: { title: 'Daftar Siswa di Kelas' } }
+      { path: 'grades/students/:gradeId', component: () => import('pages/grades/Student.vue'), meta: { title: 'Daftar Siswa per Kelas' } },
+      { path: 'grades/lessons/:gradeId', component: () => import('pages/grades/Lesson.vue'), meta: { title: 'Daftar Pelajaran per Kelas' } }
     ]
   },
   {

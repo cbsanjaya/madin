@@ -1,20 +1,16 @@
 <template>
   <q-page padding>
     <q-table
-      :data="grades"
+      title="Siswa"
+      :data="lessons"
       :columns="columns"
       row-key="id"
       :rows-per-page-options="[]"
       :loading="loading"
-      :filter="filter"
       binary-state-sort
     >
       <template v-slot:top-left>
-        <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
+        <div class="text-h4">Daftar Pelajaran Kelas {{ grade ? grade.nama : '' }} Tahun Ajaran {{ getActivePeriod }}</div>
       </template>
 
       <template v-slot:top-right>
@@ -29,22 +25,6 @@
       <template v-slot:body-cell-aksi="props">
         <q-td :props="props">
           <q-btn-group rounded>
-            <q-btn
-              size="sm"
-              color="green"
-              icon="visibility"
-              label="Siswa"
-              rounded
-              @click="showStudents(props.row.id)"
-            />
-            <q-btn
-              size="sm"
-              color="purple"
-              icon="visibility"
-              label="Pelajaran"
-              rounded
-              @click="showLessons(props.row.id)"
-            />
             <q-btn
               size="sm"
               color="primary"
@@ -67,17 +47,19 @@
 
     </q-table>
 
-    <q-dialog v-model="formGrade.show">
+    <q-dialog v-model="formLesson.show">
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section>
-          <div class="text-h6">Edit Kelas</div>
+          <div class="text-h6">Edit Pelajaran</div>
         </q-card-section>
 
         <q-separator />
 
         <q-card-section>
-          <q-input v-model="editGrade.nama" label="Nama" autofocus/>
-          <q-input v-model="editGrade.periode" label="Periode"/>
+          <q-input v-model="editLesson.name" label="Pelajaran" autofocus/>
+          <q-input v-model="editLesson.book" label="Kitab" />
+          <q-input v-model="editLesson.day" label="Hari" />
+          <q-input v-model="editLesson.semester" label="Smester" />
         </q-card-section>
 
         <q-separator />
@@ -95,22 +77,24 @@
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'PageGradeIndex',
+  name: 'PageLessonIndex',
   data: () => ({
-    filter: '',
+    grade: null,
     loading: false,
     columns: [
-      { name: 'nama', label: 'Nama', field: 'nama', align: 'left' },
-      { name: 'periode', label: 'Periode', field: 'periode', align: 'left' },
+      { name: 'name', label: 'Pelajaran', field: 'name', align: 'left' },
+      { name: 'book', label: 'Kitab', field: 'book', align: 'left' },
+      { name: 'day', label: 'Hari', field: 'day', align: 'left' },
+      { name: 'semester', label: 'Semester', field: 'semester', align: 'left' },
       { name: 'aksi', label: 'Aksi', align: 'center' }
     ],
-    formGrade: {
+    formLesson: {
       show: false,
       isNew: true
     },
-    grades: [],
-    gradeId: null,
-    editGrade: {}
+    lessons: [],
+    lessonId: null,
+    editLesson: {}
   }),
   computed: {
     ...mapGetters('setting', [
@@ -121,37 +105,53 @@ export default {
     getActivePeriod: {
       immediate: true,
       handler (id) {
-        this.$bind('grades', this.$db.collection('grades').where('periode', '==', id))
+        this.$bind('lessons', this.$db.collection('lessons')
+          .where('grade', '==', this.$route.params.gradeId)
+          .where('period', '==', id)
+        )
       }
+    }
+  },
+  firestore () {
+    return {
+      grade: this.$db.doc(`/grades/${this.$route.params.gradeId}`)
     }
   },
   methods: {
     newData () {
-      this.formGrade = {
+      this.formLesson = {
         show: true,
         isNew: true
       }
-      this.editGrade = {
-        nama: null,
-        periode: null
+      this.editLesson = {
+        grade: this.grade.id,
+        period: this.getActivePeriod,
+        name: null,
+        book: null,
+        day: null,
+        semester: null
       }
     },
-    editData (grade) {
-      this.formGrade = {
+    editData (lesson) {
+      this.formLesson = {
         show: true,
         isNew: false
       }
-      this.gradeId = grade.id
-      this.editGrade = {
-        nama: grade.nama,
-        periode: grade.periode
+      this.lessonId = lesson.id
+      this.editLesson = {
+        grade: this.grade.id,
+        period: this.getActivePeriod,
+        name: lesson.name,
+        book: lesson.book,
+        day: lesson.day,
+        semester: lesson.semester
       }
     },
     saveData () {
-      if (this.formGrade.isNew) {
-        this.$firestoreRefs.grades.add(this.editGrade)
+      if (this.formLesson.isNew) {
+        this.$db.collection('lessons').add(this.editLesson)
       } else {
-        this.$firestoreRefs.grades.doc(this.gradeId).update(this.editGrade)
+        this.$db.collection('lessons').doc(this.lessonId).update(this.editLesson)
       }
     },
     deleteData (id) {
@@ -166,14 +166,8 @@ export default {
         },
         persistent: true
       }).onOk(() => {
-        this.$firestoreRefs.grades.doc(id).delete()
+        this.$firestoreRefs.lessons.doc(id).delete()
       })
-    },
-    showStudents (gradeId) {
-      this.$router.push({ path: `/grades/students/${gradeId}` })
-    },
-    showLessons (gradeId) {
-      this.$router.push({ path: `/grades/lessons/${gradeId}` })
     }
   }
 }

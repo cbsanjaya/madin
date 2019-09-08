@@ -16,10 +16,10 @@
           {{ $route.meta.title }}
         </q-toolbar-title>
 
-        <q-btn-dropdown stretch flat :label="`${$store.getters['setting/getActivePeriod']} H`">
+        <q-btn-dropdown stretch flat :label="`${getActivePeriod} H`">
           <q-list>
             <q-item-label header>Ubah Tahun Ajaran</q-item-label>
-            <q-item v-for="ta in $store.getters['setting/getPeriods']"
+            <q-item v-for="ta in getPeriods"
               :key="ta"
               clickable
               @click="changePeriod(ta)"
@@ -30,7 +30,7 @@
                 <q-avatar icon="calendar_today" color="secondary" text-color="white" />
               </q-item-section>
               <q-item-section>
-                <q-item-label>{{ ta }}</q-item-label>
+                <q-item-label>{{ ta }} H</q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
@@ -113,6 +113,7 @@
 
 <script>
 import { openURL } from 'quasar'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'DefaultLayout',
@@ -122,6 +123,12 @@ export default {
       user: this.$auth.currentUser,
       routes: this.$router.options.routes
     }
+  },
+  computed: {
+    ...mapGetters('setting', [
+      'getActivePeriod',
+      'getPeriods'
+    ])
   },
   methods: {
     openURL,

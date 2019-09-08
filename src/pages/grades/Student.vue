@@ -9,7 +9,7 @@
       :selected.sync="selected"
     >
       <template v-slot:top-left>
-        <div class="text-h4">Daftar Siswa Kelas {{ grade ? grade.nama : '' }}</div>
+        <div class="text-h4">Daftar Siswa Kelas {{ grade ? grade.nama : '' }} Tahun Ajaran {{ getActivePeriod }}</div>
       </template>
 
       <template v-slot:top-right>
