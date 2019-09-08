@@ -10,7 +10,7 @@
       binary-state-sort
     >
       <template v-slot:top-left>
-        <div class="text-h4">Daftar Pelajaran Kelas {{ grade ? grade.nama : '' }} Tahun Ajaran {{ getActivePeriod }}</div>
+        <div class="text-h4">Daftar Pelajaran Kelas {{ grade ? grade.name : '' }} Tahun Ajaran {{ getActivePeriod }} H</div>
       </template>
 
       <template v-slot:top-right>

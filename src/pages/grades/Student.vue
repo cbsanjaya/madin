@@ -9,7 +9,7 @@
       :selected.sync="selected"
     >
       <template v-slot:top-left>
-        <div class="text-h4">Daftar Siswa Kelas {{ grade ? grade.nama : '' }} Tahun Ajaran {{ getActivePeriod }}</div>
+        <div class="text-h4">Daftar Siswa Kelas {{ grade ? grade.name : '' }} Tahun Ajaran {{ getActivePeriod }} H</div>
       </template>
 
       <template v-slot:top-right>
@@ -48,7 +48,7 @@
             label="Nama Siswa"
             :options="students"
             option-value="id"
-            option-label="nama"
+            option-label="name"
             emit-value
             map-options
           />
@@ -66,41 +66,46 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'PageGradeStudent',
   data: () => ({
     selected: [],
     columns: [
-      { name: 'induk', label: 'Induk', field: 'induk', align: 'left' },
-      { name: 'nama', label: 'Nama', field: 'nama', align: 'left' },
-      { name: 'kamar', label: 'Kamar', field: 'kamar', align: 'left' }
+      { name: 'induk', label: 'Induk', field: row => row.student.idn, align: 'left' },
+      { name: 'nama', label: 'Nama', field: row => row.student.name, align: 'left' },
+      { name: 'kamar', label: 'Kamar', field: row => row.student.room, align: 'left' }
     ],
     showForm: false,
     students: [],
     studentId: null,
     newStudent: null,
     grade: null,
-    gradeId: null
+    gradeStudents: null
   }),
   computed: {
-    gradeStudents: function () {
-      return this.students.filter(student => {
-        if (student.grades) {
-          for (let i in student.grades) {
-            if (student.grades[i] === this.grade.id) {
-              return true
-            }
-          }
-        }
-        return false
-      })
+    ...mapGetters('setting', [
+      'getActivePeriod'
+    ])
+  },
+  watch: {
+    getActivePeriod: {
+      immediate: true,
+      handler (id) {
+        this.$bind('gradeStudents',
+          this.$db.collection('grade_students')
+            .where('grade', '==', this.$db.doc(`/grades/${this.$route.params.gradeId}`))
+            .where('period', '==', id)
+        )
+      }
     }
   },
-  created () {
-    this.gradeId = this.$route.params.gradeId
-    this.$bind('grade', this.$db.doc(`/grades/${this.gradeId}`))
-    this.$bind('students', this.$db.collection('students').orderBy('nama'))
+  firestore () {
+    return {
+      grade: this.$db.doc(`/grades/${this.$route.params.gradeId}`),
+      students: this.$db.collection('students')
+    }
   },
   methods: {
     newData () {
@@ -108,8 +113,13 @@ export default {
       this.newStudent = null
     },
     saveData () {
-      this.$db.doc(`/students/${this.newStudent}`)
-        .update({ grades: this.$firebase.firestore.FieldValue.arrayUnion(this.gradeId) })
+      let studentRef = this.$db.doc(`/students/${this.newStudent}`)
+      this.$db.doc(`/grade_students/${this.grade.id}_${this.newStudent}`)
+        .set({
+          grade: this.$firestoreRefs.grade,
+          student: studentRef,
+          period: this.getActivePeriod
+        })
     },
     deleteData () {
       this.$q.dialog({
@@ -124,9 +134,9 @@ export default {
         persistent: true
       }).onOk(() => {
         for (let i in this.selected) {
-          this.$db.doc(`/students/${this.selected[i].id}`)
-            .update({ grades: this.$firebase.firestore.FieldValue.arrayRemove(this.gradeId) })
+          this.$db.collection('grade_students').doc(this.selected[i].id).delete()
         }
+        this.selected = []
       })
     }
   }
