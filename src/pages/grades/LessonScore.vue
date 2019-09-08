@@ -17,9 +17,21 @@
         <q-tr :props="props">
           <q-td key="idn" :props="props">{{ props.row.idn }}</q-td>
           <q-td key="name" :props="props">{{ props.row.name }}</q-td>
-          <q-td key="score" :props="props">
-            {{ props.row.score }}
-            <q-popup-edit v-model="editScore" @hide="editScore = ''" @save="setScore(props.row.id)" title="Update Nilai" buttons>
+          <q-td key="read" :props="props" class="cursor-pointer">
+            {{ props.row.score.read }}
+            <q-popup-edit v-model="editScore" @hide="editScore = ''" @save="setScore(props.row.id, 'read')" title="Update Nilai" buttons>
+              <q-input type="number" v-model="editScore" dense autofocus />
+            </q-popup-edit>
+          </q-td>
+          <q-td key="quiz" :props="props" class="cursor-pointer">
+            {{ props.row.score.quiz }}
+            <q-popup-edit v-model="editScore" @hide="editScore = ''" @save="setScore(props.row.id, 'quiz')" title="Update Nilai" buttons>
+              <q-input type="number" v-model="editScore" dense autofocus />
+            </q-popup-edit>
+          </q-td>
+          <q-td key="examp" :props="props" class="cursor-pointer">
+            {{ props.row.score.examp }}
+            <q-popup-edit v-model="editScore" @hide="editScore = ''" @save="setScore(props.row.id, 'examp')" title="Update Nilai" buttons>
               <q-input type="number" v-model="editScore" dense autofocus />
             </q-popup-edit>
           </q-td>
@@ -45,7 +57,9 @@ export default {
     columns: [
       { name: 'idn', label: 'Induk', field: 'idn', align: 'left' },
       { name: 'name', label: 'Nama', field: 'name', align: 'left' },
-      { name: 'score', label: 'Nilai', field: 'score', align: 'left' }
+      { name: 'read', label: 'Syafahi', field: row => row.score.read, align: 'left' },
+      { name: 'quiz', label: 'Tugas', field: row => row.score.quiz, align: 'left' },
+      { name: 'examp', label: 'Ujian', field: row => row.score.examp, align: 'left' }
     ],
     scores: [],
     editScore: ''
@@ -65,7 +79,7 @@ export default {
           id: item.student.id,
           idn: item.student.idn,
           name: item.student.name,
-          score: findScore ? findScore.score : 0
+          score: Object.assign({}, { read: 0, quiz: 0, examp: 0 }, findScore ? findScore.score : {})
         }
 
         return newItem
@@ -86,12 +100,14 @@ export default {
     )
   },
   methods: {
-    setScore (studentId) {
+    setScore (studentId, scorekey) {
       this.$db.collection('scores').doc(`${studentId}_${this.lesson.id}`).set({
         lesson: this.lesson.id,
         student: studentId,
-        score: Number(this.editScore)
-      })
+        score: {
+          [scorekey]: Number(this.editScore)
+        }
+      }, { merge: true })
     }
   }
 }

@@ -32,7 +32,9 @@ export default {
     columns: [
       { name: 'name', label: 'Pelajaran', field: 'name', align: 'left' },
       { name: 'semester', label: 'Semester', field: 'semester', align: 'left' },
-      { name: 'score', label: 'Nilai', field: 'score', align: 'left' }
+      { name: 'read', label: 'Syafahi', field: row => row.score.read, align: 'left' },
+      { name: 'quiz', label: 'Tugas', field: row => row.score.quiz, align: 'left' },
+      { name: 'examp', label: 'Ujian', field: row => row.score.examp, align: 'left' }
     ],
     scores: []
   }),
@@ -51,7 +53,7 @@ export default {
           id: item.id,
           name: item.name,
           semester: item.semester,
-          score: findScore ? findScore.score : 0
+          score: Object.assign({}, { read: 0, quiz: 0, examp: 0 }, findScore ? findScore.score : {})
         }
 
         return newItem
