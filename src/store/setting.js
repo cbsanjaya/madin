@@ -32,7 +32,7 @@ export default {
         return state.localActivePeriod ? state.localActivePeriod : state.period.active
       }
 
-      return null
+      return ''
     }
   }
 }
