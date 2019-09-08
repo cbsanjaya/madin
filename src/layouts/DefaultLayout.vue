@@ -16,15 +16,13 @@
           {{ $route.meta.title }}
         </q-toolbar-title>
 
-        <q-btn-dropdown stretch flat :label="`${getActivePeriod} H`">
+        <q-btn-dropdown stretch flat :label="`${getActivePeriod} H`" auto-close>
           <q-list>
             <q-item-label header>Ubah Tahun Ajaran</q-item-label>
             <q-item v-for="ta in getPeriods"
               :key="ta"
               clickable
               @click="changePeriod(ta)"
-              v-close-popup
-              tabindex="0"
             >
               <q-item-section avatar>
                 <q-avatar icon="calendar_today" color="secondary" text-color="white" />
